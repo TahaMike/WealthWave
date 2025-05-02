@@ -12,14 +12,14 @@ pluginManagement {
     repositories {
         google()
         gradlePluginPortal()
-        maven { url 'https://storage.googleapis.com/download.flutter.io' } // ✅ Add this too
+        maven { url 'https://storage.googleapis.com/download.flutter.io' }
     }
 }
 
 plugins {
     id "dev.flutter.flutter-plugin-loader" version "1.0.0"
-    id "com.android.application" version "8.2.2" apply false
-    id "org.jetbrains.kotlin.android" version "1.9.22" apply false
+    id "com.android.application" version "8.0.2" apply false
+    id "org.jetbrains.kotlin.android" version "1.7.10" apply false
 }
 
 dependencyResolutionManagement {

@@ -1,14 +1,13 @@
 plugins {
     id "com.android.application"
     id "kotlin-android"
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
 }
 
 android {
+    compileSdkVersion 33
     namespace = "com.example.wealthwave"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    ndkVersion = '23.1.7779620'
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -16,24 +15,45 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = "1.8"
     }
 
     defaultConfig {
         applicationId = "com.example.wealthwave"
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
     }
 
     buildTypes {
         release {
-            signingConfig = signingConfigs.debug
+            // Use actual release signing when deploying to production
+            // Replace signingConfigs.debug with signingConfigs.release as needed
+            signingConfig signingConfigs.debug
+
+            // Enable minify and shrinkResources only in release to optimize APK size
+            minifyEnabled false // Temporarily disable; enable with proper configuration
+            shrinkResources false // Temporarily disable; enable with proper configuration
+
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+
+        // Debug configuration for development builds
+        debug {
+            minifyEnabled false // Keep minification off for easier debugging
+            shrinkResources false // Disable this for development builds
+        }
+    }
+
+    // Optional configuration for packaging to improve compatibility
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}' // Exclude unnecessary metadata files
         }
     }
 }
 
 flutter {
-    source = "../.."
+    source = "../.." // Ensure this points to your correct Flutter module path
 }
