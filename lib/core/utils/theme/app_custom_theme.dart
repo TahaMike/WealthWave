@@ -120,8 +120,7 @@ class AppCustomTheme {
         hintStyle: TextStyle(color: Colors.white70),
         labelStyle: TextStyle(color: darkColorScheme.onSurface),
       ),
-      cardColor: darkColorScheme.surface,
-      dialogBackgroundColor: darkColorScheme.surface,
+      cardColor: darkColorScheme.surface, dialogTheme: DialogThemeData(backgroundColor: darkColorScheme.surface),
     );
   }
 }
