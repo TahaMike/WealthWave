@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:wealthwave/core/utils/theme/app_custom_theme.dart';
 import 'package:wealthwave/presentation/widgets/expense_chart.dart';
 import '../../application/providers/transaction_provider.dart';
 import 'add_transaction_screen.dart';
