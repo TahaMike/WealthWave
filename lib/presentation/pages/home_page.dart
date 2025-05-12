@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:wealthwave/core/utils/theme/app_custom_theme.dart';
+import 'package:wealthwave/presentation/widgets/expense_chart.dart';
 import '../../application/providers/transaction_provider.dart';
-import '../../core/utils/csv_exporter.dart';
 import 'add_transaction_screen.dart';
 
 class HomePage extends HookConsumerWidget {
@@ -11,48 +12,59 @@ class HomePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final transactionsAsync = ref.watch(transactionProvider);
 
+    // Sort transactions by date (newest first)
+    final sortedTransactions = [...transactionsAsync]
+      ..sort((a, b) => b.date.compareTo(a.date));
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text("WealthWave"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.download),
-            onPressed: () async {
-              final transactions = transactionsAsync;
-              final path = await CsvExporter.exportTransactionsToCSV(transactions);
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Exported to $path')),
-              );
-            },
-          )
-        ],
-      ),
-      body: transactionsAsync.isEmpty
-          ? Center(child: Text('No transactions yet'))
-          : ListView.builder(
-              itemCount: transactionsAsync.length,
+      backgroundColor: const Color.fromARGB(255, 208, 243, 209),
+      appBar: AppBar(title: Text("WealthWave")),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(height: 40),
+            SizedBox(
+              height: 250,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ExpensesChart(transactions: sortedTransactions),
+              ),
+            ),
+            const Divider(),
+            ListView.builder(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemCount: sortedTransactions.length,
               itemBuilder: (context, index) {
-                final tx = transactionsAsync[index];
+                final tx = sortedTransactions[index];
                 return ListTile(
                   title: Text(tx.title),
-                  subtitle: Text('₹${tx.amount} on ${tx.date.toLocal()}'),
+                  subtitle: Text(
+                    '₹${tx.amount.toStringAsFixed(2)} on ${tx.date.toLocal()}',
+                  ),
                   trailing: Text(tx.type.name),
                 );
               },
             ),
+          ],
+        ),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) => AddTransactionScreen(
-                onAddTransaction: (tx) {
-                  ref.read(transactionProvider.notifier).addTransaction(tx);
-                },
-                onImportTransactions: (list) {
-                  ref.read(transactionProvider.notifier).importTransactions(list);
-                },
-              ),
+              builder:
+                  (_) => AddTransactionScreen(
+                    onAddTransaction: (tx) {
+                      ref.read(transactionProvider.notifier).addTransaction(tx);
+                    },
+                    onImportTransactions: (list) {
+                      ref
+                          .read(transactionProvider.notifier)
+                          .importTransactions(list);
+                    },
+                  ),
             ),
           );
         },
